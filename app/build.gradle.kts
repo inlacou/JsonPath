@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.inlacou.lib.jsonpathapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.inlacou.lib.jsonpathapp"
