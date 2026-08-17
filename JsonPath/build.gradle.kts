@@ -4,6 +4,9 @@ plugins {
     `maven-publish`
 }
 
+group = project.findProperty("group")?.toString() ?: "com.inlacou.lib.jsonpath"
+version = project.findProperty("version")?.toString() ?: "unspecified"
+
 kotlin {
     jvm()
     iosArm64()
@@ -34,14 +37,6 @@ kotlin {
         }
         val iosSimulatorArm64Main by getting {
             dependsOn(iosMain)
-        }
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["kotlin"])
         }
     }
 }

@@ -26,6 +26,10 @@ jobs:
       - name: Run KMP Unit Tests (JVM)
         run: ./gradlew :JsonPath:jvmTest
 
+      - name: Run KMP Unit Tests (iOS Simulator)
+        if: runner.os == 'macOS'
+        run: ./gradlew :JsonPath:iosSimulatorArm64Test
+
       # You can add more target tests here if you have runners for them
       # - name: Run KMP Unit Tests (iOS)
       #   run: ./gradlew :JsonPath:iosSimulatorArm64Test
