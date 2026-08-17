@@ -1,4 +1,4 @@
-package com.inlacou.lib.jsonpath
+package com.inlacou.lib.jsonpath.utils
 
 object Constants {
     /**
@@ -6,8 +6,4 @@ object Constants {
      */
     const val UUID_REGEX =
         "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-
-    const val UUID_EXTENSION_REGEX =
-        "$UUID_REGEX\\.(\\w+)"
-
 }

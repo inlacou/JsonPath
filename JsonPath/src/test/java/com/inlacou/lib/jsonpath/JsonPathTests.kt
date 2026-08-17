@@ -1,11 +1,12 @@
 package com.inlacou.lib.jsonpath
 
-import kotlinx.serialization.json.JsonObject
+import com.inlacou.lib.jsonpath.utils.Constants
+import com.inlacou.lib.jsonpath.utils.assertJsonEquals
+import com.inlacou.lib.jsonpath.utils.assertNull
+import com.inlacou.lib.jsonpath.utils.assertThrows
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
-import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class JsonPathTests {
@@ -157,7 +158,10 @@ internal class JsonPathTests {
     }
 
     @Test fun `set recursively - nested 1 - non existent object - String`() {
-        assertThrows<JsonPathMissingNodeException> { """{"items":[{"title":"El principito"}]}""".toJsonObject().set(JsonPath("$.newItem.newKey"), "some value") }
+        assertThrows<JsonPathMissingNodeException> {
+            """{"items":[{"title":"El principito"}]}""".toJsonObject()
+                .set(JsonPath("$.newItem.newKey"), "some value")
+        }
     }
 
     @Test fun `set recursively - nested 1 - String`() {
@@ -194,14 +198,15 @@ internal class JsonPathTests {
     }
 
     @Test fun `set recursively - nested 2 (not exists) - String`() {
-        assertThrows<JsonPathMissingNodeException> ("For '$.lvl1Item.lvl2Item.newKey', '$.lvl1Item.lvl2Item' does not exist") {
+        assertThrows<JsonPathMissingNodeException>("For '$.lvl1Item.lvl2Item.newKey', '$.lvl1Item.lvl2Item' does not exist") {
             """{
                   "items":[{"title":"El principito"}],
                   "lvl1Item":{
                     "someKeyLvl1":"someValue"
                   }
                }
-            """.trimIndent().trimMargin().toJsonObject().set(JsonPath("$.lvl1Item.lvl2Item.newKey"), "newValue")
+            """.trimIndent().trimMargin().toJsonObject()
+                .set(JsonPath("$.lvl1Item.lvl2Item.newKey"), "newValue")
         }
     }
 
@@ -339,7 +344,8 @@ internal class JsonPathTests {
     @Test fun `recursive set the only element of the array by first and last access - 1`() {
         assertJsonEquals(
             """{"items":[{"title":"some value"}]}""".toJsonObject(),
-            """{"items":[{"title":"El principito"}]}""".toJsonObject().set(JsonPath("$.items[0].title"), "some value"),
+            """{"items":[{"title":"El principito"}]}""".toJsonObject()
+                .set(JsonPath("$.items[0].title"), "some value"),
             """'set("$.items[0].title", "some value")' to '{"items":[{"title":"El principito"}]}' should be '{"items":[{"title":"some value"}]}'"""
         )
     }
@@ -347,22 +353,26 @@ internal class JsonPathTests {
     @Test fun `recursive set the only element of the array by first and last access - 2`() {
         assertJsonEquals(
             """{"items":[{"title":"some value"}]}""".toJsonObject(),
-            """{"items":[{"title":"El principito"}]}""".toJsonObject().set(JsonPath("$.items[last].title"), "some value"),
+            """{"items":[{"title":"El principito"}]}""".toJsonObject()
+                .set(JsonPath("$.items[last].title"), "some value"),
             """'set("$.items[last].title", "some value")' to '{"items":[{"title":"El principito"}]}' should be '{"items":[{"title":"some value"}]}'"""
         )
     }
 
     @Test fun `recursive set the only element of the array by first and last access - 3`() {
         assertJsonEquals(
-            """{"items":[{"title":"El principito"}]}""".toJsonObject().set(JsonPath("$.items[0].title"), "some value"),
-            """{"items":[{"title":"El principito"}]}""".toJsonObject().set(JsonPath("$.items[last].title"), "some value"),
+            """{"items":[{"title":"El principito"}]}""".toJsonObject()
+                .set(JsonPath("$.items[0].title"), "some value"),
+            """{"items":[{"title":"El principito"}]}""".toJsonObject()
+                .set(JsonPath("$.items[last].title"), "some value"),
             "setting the first element or the last on a one element list should be the same"
         )
     }
 
     @Test fun `recursive modify element on array at first index`() {
         assertThrows<JsonPathMissingArrayElementException>("item at index 1 does not exist, so we cannot modify it") {
-            """{"items":[{"title":"El principito"}]}""".toJsonObject().set(JsonPath("$.items[1].someKey"), "some value")
+            """{"items":[{"title":"El principito"}]}""".toJsonObject()
+                .set(JsonPath("$.items[1].someKey"), "some value")
         }
     }
 
@@ -469,78 +479,124 @@ internal class JsonPathTests {
     }
 
     @Test fun `get Boolean where data is String throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":"aaa"}""".toJsonObject().getBooleanByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":"aaa"}""".toJsonObject().getBooleanByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Boolean where data is JsonObject throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":{"key2":"data2"}}""".toJsonObject().getBooleanByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":{"key2":"data2"}}""".toJsonObject().getBooleanByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Boolean where data is JsonArray throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":[{"key2":"data2"}]}""".toJsonObject().getBooleanByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":[{"key2":"data2"}]}""".toJsonObject().getBooleanByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Boolean where key is not found throws`() {
-        assertThrows<JsonPathNotFoundException> { """{"item":"aaa"}""".toJsonObject().getBooleanByPath(JsonPath("$.key")) }
+        assertThrows<JsonPathNotFoundException> {
+            """{"item":"aaa"}""".toJsonObject().getBooleanByPath(JsonPath("$.key"))
+        }
     }
 
     @Test fun `get Int where data is String throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":"aaa"}""".toJsonObject().getIntByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":"aaa"}""".toJsonObject().getIntByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Int where data is JsonObject throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":{"key2":"data2"}}""".toJsonObject().getIntByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":{"key2":"data2"}}""".toJsonObject().getIntByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Int where data is JsonArray throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":[{"key2":"data2"}]}""".toJsonObject().getIntByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":[{"key2":"data2"}]}""".toJsonObject().getIntByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Int where key is not found throws`() {
-        assertThrows<JsonPathNotFoundException> { """{"item":"aaa"}""".toJsonObject().getIntByPath(JsonPath("$.key")) }
+        assertThrows<JsonPathNotFoundException> {
+            """{"item":"aaa"}""".toJsonObject().getIntByPath(JsonPath("$.key"))
+        }
     }
 
     @Test fun `get Double where data is String throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":"aaa"}""".toJsonObject().getDoubleByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":"aaa"}""".toJsonObject().getDoubleByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Double where data is JsonObject throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":{"key2":"data2"}}""".toJsonObject().getDoubleByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":{"key2":"data2"}}""".toJsonObject().getDoubleByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Double where data is JsonArray throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":[{"key2":"data2"}]}""".toJsonObject().getDoubleByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":[{"key2":"data2"}]}""".toJsonObject().getDoubleByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Double where key is not found throws`() {
-        assertThrows<JsonPathNotFoundException> { """{"item":"aaa"}""".toJsonObject().getDoubleByPath(JsonPath("$.key")) }
+        assertThrows<JsonPathNotFoundException> {
+            """{"item":"aaa"}""".toJsonObject().getDoubleByPath(JsonPath("$.key"))
+        }
     }
 
     @Test fun `get Float where data is String throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":"aaa"}""".toJsonObject().getFloatByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":"aaa"}""".toJsonObject().getFloatByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Float where data is JsonObject throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":{"key2":"data2"}}""".toJsonObject().getFloatByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":{"key2":"data2"}}""".toJsonObject().getFloatByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Float where data is JsonArray throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":[{"key2":"data2"}]}""".toJsonObject().getFloatByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":[{"key2":"data2"}]}""".toJsonObject().getFloatByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Float where key is not found throws`() {
-        assertThrows<JsonPathNotFoundException> { """{"item":"aaa"}""".toJsonObject().getFloatByPath(JsonPath("$.key")) }
+        assertThrows<JsonPathNotFoundException> {
+            """{"item":"aaa"}""".toJsonObject().getFloatByPath(JsonPath("$.key"))
+        }
     }
 
     @Test fun `get Long where data is String throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":"aaa"}""".toJsonObject().getLongByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":"aaa"}""".toJsonObject().getLongByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Long where data is JsonObject throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":{"key2":"data2"}}""".toJsonObject().getLongByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":{"key2":"data2"}}""".toJsonObject().getLongByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Long where data is JsonArray throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":[{"key2":"data2"}]}""".toJsonObject().getLongByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":[{"key2":"data2"}]}""".toJsonObject().getLongByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get Long where key is not found throws`() {
-        assertThrows<JsonPathNotFoundException> { """{"item":"aaa"}""".toJsonObject().getLongByPath(JsonPath("$.key")) }
+        assertThrows<JsonPathNotFoundException> {
+            """{"item":"aaa"}""".toJsonObject().getLongByPath(JsonPath("$.key"))
+        }
     }
 
     @Test fun `get String where data is JsonObject throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":{"key2":"data2"}}""".toJsonObject().getStringByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":{"key2":"data2"}}""".toJsonObject().getStringByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get String where data is JsonArray throws`() {
-        assertThrows<JsonPathFoundWrongFormatException> { """{"item":[{"key2":"data2"}]}""".toJsonObject().getStringByPath(JsonPath("$.item")) }
+        assertThrows<JsonPathFoundWrongFormatException> {
+            """{"item":[{"key2":"data2"}]}""".toJsonObject().getStringByPath(JsonPath("$.item"))
+        }
     }
     @Test fun `get String where key is not found throws not found`() {
-        assertThrows<JsonPathNotFoundException> { """{"item":"aaa"}""".toJsonObject().getStringByPath(JsonPath("$.items")) }
+        assertThrows<JsonPathNotFoundException> {
+            """{"item":"aaa"}""".toJsonObject().getStringByPath(JsonPath("$.items"))
+        }
     }
 
     @Test fun `set JsonObject inside non existent array`() {
@@ -621,14 +677,16 @@ internal class JsonPathTests {
     @Test fun `set JsonPrimitive by regex - complex`() {
         assertEquals(
             """{"8b24a949-682a-42b8-8897-fcfb545c1541":"Some data"}""".toJsonElement(),
-            """{"8b24a949-682a-42b8-8897-fcfb545c1541":"El principito"}""".toJsonObject().set(JsonPath("$.R={${Regex(Constants.UUID_REGEX)}}"), "Some data")
+            """{"8b24a949-682a-42b8-8897-fcfb545c1541":"El principito"}""".toJsonObject().set(JsonPath("$.R={${Regex(
+                Constants.UUID_REGEX)}}"), "Some data")
         )
     }
 
     @Test fun `set JsonPrimitive by regex - complex 2`() {
         assertEquals(
             """{"8b24a949-682a-42b8-8897-fcfb545c1541": { "id": "Some data" }}""".toJsonElement(),
-            """{"8b24a949-682a-42b8-8897-fcfb545c1541": { "id": "El principito" }}""".toJsonObject().set(JsonPath("$.R={${Regex(Constants.UUID_REGEX)}}.id"), "Some data")
+            """{"8b24a949-682a-42b8-8897-fcfb545c1541": { "id": "El principito" }}""".toJsonObject().set(JsonPath("$.R={${Regex(
+                Constants.UUID_REGEX)}}.id"), "Some data")
         )
     }
 
@@ -671,14 +729,18 @@ internal class JsonPathTests {
 
     //@DisplayName("""Remove empty jsons: inner array: 2 steps""")
     @Test fun removeEmptyJsonObjectFieldsInsideArray2Step() {
-        assertJsonEquals(null, """{"wrapper": [ {"center":{}} ]}""".toJsonObject().removeEmptyJsonObjectFields())
+        assertJsonEquals(
+            null,
+            """{"wrapper": [ {"center":{}} ]}""".toJsonObject().removeEmptyJsonObjectFields()
+        )
     }
 
     //@DisplayName("""Remove empty jsons: real example""")
     @Test fun removeEmptyJsonObjectFieldsInsideRealExample() {
         assertJsonEquals(
             """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo"}],"layouts":[{"TODO": "TODO V2LayersLayoutConverter"}],"groups": [{"TODO": "TODO V2LayersLayoutConverter"}],"extra-field1": "extra1"}""".toJsonObject(),
-            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo","settings":{"transform":{"position":{},"flipped":{}},"brush":[],"shadows":[]}}],"layouts":[{"TODO":"TODO V2LayersLayoutConverter"}],"groups":[{"TODO":"TODO V2LayersLayoutConverter"}],"frame":[],"extra-field1":"extra1"}""".toJsonObject().removeEmptyJsonObjectFields()
+            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo","settings":{"transform":{"position":{},"flipped":{}},"brush":[],"shadows":[]}}],"layouts":[{"TODO":"TODO V2LayersLayoutConverter"}],"groups":[{"TODO":"TODO V2LayersLayoutConverter"}],"frame":[],"extra-field1":"extra1"}""".toJsonObject()
+                .removeEmptyJsonObjectFields()
         )
     }
 
@@ -686,7 +748,8 @@ internal class JsonPathTests {
     @Test fun removeEmptyJsonObjectFieldsInsideRealExample4() {
         assertJsonEquals(
             """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo"}],"extra-field1":"extra1"}""".toJsonObject(),
-            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo","settings":{"transform":{"position":{},"flipped":{}},"brush":[],"shadows":[]}}],"extra-field1":"extra1"}""".toJsonObject().removeEmptyJsonObjectFields()
+            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo","settings":{"transform":{"position":{},"flipped":{}},"brush":[],"shadows":[]}}],"extra-field1":"extra1"}""".toJsonObject()
+                .removeEmptyJsonObjectFields()
         )
     }
 
@@ -694,7 +757,8 @@ internal class JsonPathTests {
     @Test fun removeEmptyJsonObjectFieldsInsideRealExample3() {
         assertJsonEquals(
             """{"added_objects":[{"uuid": "00000000-0000-0000-0000-000000000027","type": "photo"}]}""".toJsonObject(),
-            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo","settings":{"transform":{"position":{},"flipped":{}},"brush":[],"shadows":[]}}]}""".toJsonObject().removeEmptyJsonObjectFields()
+            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo","settings":{"transform":{"position":{},"flipped":{}},"brush":[],"shadows":[]}}]}""".toJsonObject()
+                .removeEmptyJsonObjectFields()
         )
     }
 
@@ -702,7 +766,8 @@ internal class JsonPathTests {
     @Test fun removeEmptyJsonObjectFieldsInsideRealExample2() {
         assertJsonEquals(
             """{"added_objects":[{"uuid": "00000000-0000-0000-0000-000000000027","type": "photo"}]}""".toJsonObject(),
-            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo"}]}""".toJsonObject().removeEmptyJsonObjectFields()
+            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo"}]}""".toJsonObject()
+                .removeEmptyJsonObjectFields()
         )
     }
 
@@ -710,7 +775,8 @@ internal class JsonPathTests {
     @Test fun removeEmptyJsonObjectFieldsInsideRealExample5() {
         assertJsonEquals(
             """{"added_objects":[{"uuid": "00000000-0000-0000-0000-000000000027","type": "photo"}]}""".toJsonObject(),
-            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo"}],"frame":[]}""".toJsonObject().removeEmptyJsonObjectFields()
+            """{"added_objects":[{"uuid":"00000000-0000-0000-0000-000000000027","type":"photo"}],"frame":[]}""".toJsonObject()
+                .removeEmptyJsonObjectFields()
         )
     }
 
@@ -732,7 +798,9 @@ internal class JsonPathTests {
 
     //@DisplayName("""Trying to access non existent index in array""")
     @Test fun getArray() {
-        assertNull("""{"items":[]}""".toJsonObject().getNullableJsonObjectByPath(JsonPath("$.items[0]")))
+        assertNull(
+            """{"items":[]}""".toJsonObject().getNullableJsonObjectByPath(JsonPath("$.items[0]"))
+        )
     }
 
     //@DisplayName("""Add new item to array of length 0 by set index 0""")

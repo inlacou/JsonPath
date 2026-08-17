@@ -1,4 +1,4 @@
-package com.inlacou.lib.jsonpath
+package com.inlacou.lib.jsonpath.utils
 
 import kotlinx.serialization.json.JsonObject
 
@@ -37,7 +37,5 @@ fun assertJsonEquals(json1: JsonObject?, json2: JsonObject?, message: String) =
     assertEquals(json1, json2, message + "\n" + json1?.compareTo(json2!!))
 
 fun assertEquals(json1: JsonObject?, json2: JsonObject?, message: String? = null) {
-    TODO()
+    if(json1 != json2) throw AssertionError(message)
 }
-
-fun JsonObject.compareTo(jsonObject: JsonObject): String = TODO()
