@@ -1,0 +1,37 @@
+name: Test and Prepare for JitPack
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run JsonPath Unit Tests
+        run: ./gradlew :JsonPath:test
+
+      - name: Build JsonPath (JitPack check)
+        run: ./gradlew :JsonPath:assemble
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: JsonPath/build/test-results/test/
