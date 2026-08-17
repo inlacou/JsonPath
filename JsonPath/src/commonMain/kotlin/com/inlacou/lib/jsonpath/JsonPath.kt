@@ -1,5 +1,6 @@
 package com.inlacou.lib.jsonpath
 
+import com.inlacou.lib.jsonpath.compat.JvmInline
 import com.inlacou.lib.jsonpath.JsonPathComparator.jsonPathSplitByArrayIndex
 import kotlin.math.min
 

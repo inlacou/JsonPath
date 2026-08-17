@@ -1,4 +1,4 @@
-name: Test and Prepare for JitPack
+name: KMP Test and Prepare for JitPack
 
 on:
   push:
@@ -23,8 +23,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run JsonPath Unit Tests
-        run: ./gradlew :JsonPath:test
+      - name: Run KMP Unit Tests (JVM)
+        run: ./gradlew :JsonPath:jvmTest
+
+      # You can add more target tests here if you have runners for them
+      # - name: Run KMP Unit Tests (iOS)
+      #   run: ./gradlew :JsonPath:iosSimulatorArm64Test
 
       - name: Build JsonPath (JitPack check)
         run: ./gradlew :JsonPath:assemble
@@ -34,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: JsonPath/build/test-results/test/
+          path: JsonPath/build/test-results/

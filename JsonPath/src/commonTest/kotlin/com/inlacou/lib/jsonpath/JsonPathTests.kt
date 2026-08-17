@@ -6,8 +6,8 @@ import com.inlacou.lib.jsonpath.utils.assertNull
 import com.inlacou.lib.jsonpath.utils.assertThrows
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class JsonPathTests {
     @Test fun `getNullableByPath - target`() {

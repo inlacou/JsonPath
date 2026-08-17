@@ -1,8 +1,9 @@
 package com.inlacou.lib.jsonpath
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.assertFailsWith
 
 class JsonPathBasicTests {
 
@@ -12,9 +13,11 @@ class JsonPathBasicTests {
         assertEquals("$.store.book[0].title", path.toString())
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `JsonPath init with invalid string throws exception`() {
-        JsonPath("invalid.path")
+        assertFailsWith<IllegalArgumentException> {
+            JsonPath("invalid.path")
+        }
     }
 
     @Test
